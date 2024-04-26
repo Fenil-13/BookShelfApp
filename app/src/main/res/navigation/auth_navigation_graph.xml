@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_navigation_graph"
+    app:startDestination="@id/fragmentSignUp">
+
+    <fragment
+        android:id="@+id/fragmentSignUp"
+        android:name="com.fenil.bookshelfapp.ui.auth.fragments.SignUpFragment"
+        android:label="Fragment Sign Up"
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_sign_up_to_login"
+            app:destination="@id/fragmentLogin" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentLogin"
+        android:name="com.fenil.bookshelfapp.ui.auth.fragments.LoginFragment"
+        android:label="Fragment Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_to_sign_up"
+            app:destination="@id/fragmentSignUp" />
+    </fragment>
+
+</navigation>
