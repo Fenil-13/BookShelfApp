@@ -48,14 +48,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         observeViewModels()
         setupUi()
+        authViewModel.getLoggedInUser()
     }
 
     private fun setupUi() {
         binding.btnLogOut.setOnClickListener(DelayAwareClickListener{
-            authViewModel.loggedInUserResponse.observe(this@MainActivity){
+            authViewModel.loggedInUserResponse.value.let{
                 authViewModel.logout(it?.email.orEmpty())
             }
-            startActivity(Intent(this, AuthActivity::class.java))
+            finish()
+            val authIntent = Intent(this, AuthActivity::class.java)
+            authIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(authIntent)
         })
 
         binding.rvBooks.apply {
@@ -102,22 +106,28 @@ class MainActivity : AppCompatActivity() {
                 bookViewModel.getBookList()
             }
         }
+
         bookViewModel.bookResponse.observe(this){
             it.data?.let { data ->
                 binding.progressBar.isVisible = false
-                binding.rvBooks.isVisible = true
+                binding.tvError.isVisible = false
+                binding.content.isVisible = true
                 handleData(data)
             } ?: kotlin.run {
                 when(it.status){
                     Status.LOADING -> {
-                        binding.rvBooks.isVisible = false
+                        binding.content.isVisible = false
+                        binding.tvError.isVisible = false
                         binding.progressBar.isVisible = true
                     }
                     Status.SUCCESS -> {}
                     Status.ERROR,
                     Status.FAILURE,
                     Status.NO_INTERNET -> {
-
+                        binding.tvError.isVisible = true
+                        binding.progressBar.isVisible = false
+                        binding.content.isVisible = false
+                        binding.tvError.text = it.message
                     }
                 }
             }
@@ -150,7 +160,7 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FOR_AUTH && resultCode == Activity.RESULT_OK){
-            bookViewModel.getBookList()
+            authViewModel.getLoggedInUser()
         }
     }
 }

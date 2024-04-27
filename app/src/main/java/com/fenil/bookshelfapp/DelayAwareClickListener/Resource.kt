@@ -18,14 +18,14 @@ data class Resource<T>(var status: Status, var data: T?, val message: String?, v
         }
 
         fun <T> failure(statusCode: Int = HttpURLConnection.HTTP_INTERNAL_ERROR): Resource<T> {
-            return Resource(Status.FAILURE, null, null, statusCode = statusCode)
+            return Resource(Status.FAILURE, null, "Something went wrong", statusCode = statusCode)
         }
 
         fun <T> loading(data: T?): Resource<T> {
             return Resource(Status.LOADING, data, null, statusCode = HttpURLConnection.HTTP_OK)
         }
         fun <T> noInternet(): Resource<T> {
-            return Resource(Status.NO_INTERNET, null, null, statusCode = HttpURLConnection.HTTP_CLIENT_TIMEOUT)
+            return Resource(Status.NO_INTERNET, null, "No Internet", statusCode = HttpURLConnection.HTTP_CLIENT_TIMEOUT)
         }
     }
 

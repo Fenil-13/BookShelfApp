@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:text="Book Title"
-        android:paddingEnd="50dp"
+        android:paddingEnd="70dp"
         android:maxLines="1"
         android:ellipsize="end"
         android:background="#03A9F4"
@@ -31,6 +31,15 @@
         android:layout_margin="@dimen/dp_10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btnAddOrRemoveBookMark"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_bookmark_disable"
+        android:layout_margin="@dimen/dp_10"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnAddAnnotation" />
 
     <ImageView
         android:id="@+id/ivBook"

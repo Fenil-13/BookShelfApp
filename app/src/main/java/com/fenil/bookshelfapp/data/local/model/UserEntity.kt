@@ -10,7 +10,7 @@ data class UserEntity(
     val name: String,
     val password: String,
     val country: String,
-    val isLoggedIn: Boolean = false
+    val isLoggedIn: String
 )
 
 fun UserEntity.toUser(): User {

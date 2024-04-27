@@ -15,10 +15,6 @@ class AuthViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    init {
-        getLoggedInUser()
-    }
-
     private val _signUpResponse = MutableLiveData<Boolean?>()
     val signUpResponse: LiveData<Boolean?> = _signUpResponse
 

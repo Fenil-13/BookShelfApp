@@ -13,5 +13,10 @@ data class User(
 ): Parcelable
 
 fun User.toUserEntity(isLoggedUser:Boolean) : UserEntity {
-    return UserEntity(this.email, this.name, this.password, this.country,isLoggedUser)
+    return UserEntity(
+        this.email,
+        this.name,
+        this.password,
+        this.country,
+        if(isLoggedUser) "true" else "false")
 }

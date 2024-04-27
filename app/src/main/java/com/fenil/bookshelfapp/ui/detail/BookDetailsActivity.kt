@@ -1,9 +1,7 @@
 package com.fenil.bookshelfapp.ui.detail
 
-import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.activity.viewModels
@@ -14,11 +12,12 @@ import com.bumptech.glide.Glide
 import com.fenil.bookshelfapp.DelayAwareClickListener.DelayAwareClickListener
 import com.fenil.bookshelfapp.R
 import com.fenil.bookshelfapp.data.local.model.AnnotationEntity
+import com.fenil.bookshelfapp.data.local.model.BookmarkEntity
 import com.fenil.bookshelfapp.data.remote.data.Book
 import com.fenil.bookshelfapp.databinding.ActivityBookDetailsBinding
 import com.fenil.bookshelfapp.domain.model.User
+import com.fenil.bookshelfapp.ui.auth.AuthViewModel
 import com.fenil.bookshelfapp.ui.detail.adapter.BookAnnotationAdapter
-import com.fenil.bookshelfapp.ui.detail.dialogs.BookAnnotationDialog
 import com.fenil.bookshelfapp.ui.home.BookViewModel
 import com.fenil.bookshelfapp.ui.utils.VerticalHorizontalItemDecorator
 import com.fenil.bookshelfapp.ui.utils.getDateString
@@ -37,6 +36,7 @@ class BookDetailsActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private val bookViewModel: BookViewModel by viewModels<BookViewModel>()
+    private val authViewModel: AuthViewModel by viewModels<AuthViewModel>()
 
     private val bookAnnotationAdapter = BookAnnotationAdapter{ }
 
@@ -49,6 +49,7 @@ class BookDetailsActivity : AppCompatActivity() {
         setContentView(binding.root)
         observeViewModels()
         setupUi()
+        authViewModel.getLoggedInUser()
     }
 
     private fun setupUi() {
@@ -81,8 +82,6 @@ class BookDetailsActivity : AppCompatActivity() {
             }
         }
 
-        bookViewModel.getBookAnnotationByUser(user?.email.orEmpty(), book?.id.orEmpty())
-
         binding.rvAnnotation.apply {
             layoutManager = LinearLayoutManager(this@BookDetailsActivity)
             while (itemDecorationCount > 0){
@@ -94,6 +93,22 @@ class BookDetailsActivity : AppCompatActivity() {
 
         binding.btnAddAnnotation.setOnClickListener(DelayAwareClickListener{
             openAnnotationDialog()
+        })
+
+        binding.btnAddOrRemoveBookMark.setOnClickListener(DelayAwareClickListener{
+            if (bookViewModel.bookmarkResponse.value == true) {
+                bookViewModel.removeBookmarkBook(
+                    user?.email.orEmpty(),
+                    book?.id.orEmpty()
+                )
+            }else{
+                bookViewModel.addBookmarkBook(
+                    BookmarkEntity(
+                        userId = user?.email.orEmpty(),
+                        bookId = book?.id.orEmpty()
+                    )
+                )
+            }
         })
     }
 
@@ -111,7 +126,7 @@ class BookDetailsActivity : AppCompatActivity() {
         alertDialog.setView(input);
 
         alertDialog.setPositiveButton("Yes Add"
-        ) { dialog, whichButton -> //What ever you want to do with the value
+        ) { dialog, _ -> //What ever you want to do with the value
             if (input.text.toString().isNotEmpty()) {
                 AnnotationEntity(
                     userId = user?.email.orEmpty(),
@@ -121,11 +136,11 @@ class BookDetailsActivity : AppCompatActivity() {
                     bookViewModel.insertAnnotation(it)
                 }
             }
-
+            dialog.dismiss()
         }
 
         alertDialog.setNegativeButton("Don't Add"
-        ) { dialog, whichButton ->
+        ) { dialog, _ ->
             // what ever you want to do with No option.
             dialog.dismiss()
         }
@@ -139,6 +154,24 @@ class BookDetailsActivity : AppCompatActivity() {
             it?.let { data ->
                 handleData(data)
             }
+        }
+        bookViewModel.bookmarkResponse.observe(this){
+            it?.let { isCurrentBookmarked ->
+                handleBookmarkUi(isCurrentBookmarked)
+            }
+        }
+        authViewModel.loggedInUserResponse.observe(this) {
+            user = it
+            bookViewModel.isCurrentBookmarked(user?.email.orEmpty(), book?.id.orEmpty())
+            bookViewModel.getBookAnnotationByUser(user?.email.orEmpty(), book?.id.orEmpty())
+        }
+    }
+
+    private fun handleBookmarkUi(currentBookmarked: Boolean) {
+        if (currentBookmarked){
+            binding.btnAddOrRemoveBookMark.setImageResource(R.drawable.ic_bookmark_active)
+        }else{
+            binding.btnAddOrRemoveBookMark.setImageResource(R.drawable.ic_bookmark_disable)
         }
     }
 
