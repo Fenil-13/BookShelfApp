@@ -1,6 +1,6 @@
-package com.fenil.bookshelfapp.data.local
+package com.fenil.bookshelfapp.data.remote.implementation
 
-import com.fenil.bookshelfapp.data.remote.CountryService
+import com.fenil.bookshelfapp.data.remote.interfaces.CountryService
 import com.fenil.bookshelfapp.data.remote.data.CountryResponse
 import com.fenil.bookshelfapp.data.remote.data.LocationResponse
 import com.fenil.bookshelfapp.di.CountryServiceApi

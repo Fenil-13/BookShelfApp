@@ -18,6 +18,7 @@ class UserRepositoryImpl(private val userDao: UserDao) : UserRepository {
 
     override suspend fun login(email: String, password: String): User? {
         val user = userDao.getUserByEmail(email)
+        if (user!=null) userDao.loginUser(email)
         return user?.toUser()
     }
 

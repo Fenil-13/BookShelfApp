@@ -2,14 +2,18 @@ package com.fenil.bookshelfapp.di
 
 import android.content.Context
 import androidx.room.Room
-import com.fenil.bookshelfapp.data.local.CountryImpl
+import com.fenil.bookshelfapp.data.remote.implementation.CountryImpl
 import com.fenil.bookshelfapp.data.local.DATABASE_NAME
 import com.fenil.bookshelfapp.data.local.UserDao
 import com.fenil.bookshelfapp.data.local.UserDatabase
 import com.fenil.bookshelfapp.data.local.UserRepositoryImpl
+import com.fenil.bookshelfapp.data.remote.BOOK_BASE_URL
+import com.fenil.bookshelfapp.data.remote.interfaces.BookService
 import com.fenil.bookshelfapp.data.remote.COUNTRY_BASE_URL
 import com.fenil.bookshelfapp.data.remote.CURRENT_LOCATION_BASE_URL
-import com.fenil.bookshelfapp.data.remote.CountryService
+import com.fenil.bookshelfapp.data.remote.implementation.BookImpl
+import com.fenil.bookshelfapp.data.remote.interfaces.CountryService
+import com.fenil.bookshelfapp.data.remote.utils.UnsafeOkHttpClient.getUnsafeRetrofitOkHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,6 +61,21 @@ class AppModule {
         return retrofit.create(CountryService::class.java)
     }
 
+    @BookRetrofitClient
+    @Provides
+    fun getBookRetrofitClient(gsonConverterFactory: GsonConverterFactory): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BOOK_BASE_URL)
+            .addConverterFactory(gsonConverterFactory)
+            .client(getUnsafeRetrofitOkHttpClient())
+            .build()
+    }
+
+    @Provides
+    fun getBookService(@BookRetrofitClient retrofit: Retrofit): BookService {
+        return retrofit.create(BookService::class.java)
+    }
+
     @Provides
     fun provideUserDatabase(@ApplicationContext context: Context): UserDatabase {
         return Room.databaseBuilder(
@@ -79,5 +98,10 @@ class AppModule {
     @Provides
     fun provideCountryImplementation(@CountryServiceApi countryService: CountryService, @LocationServiceApi locationServiceApi: CountryService): CountryImpl {
         return CountryImpl(countryService, locationServiceApi)
+    }
+
+    @Provides
+    fun provideBookImplementation(bookService: BookService, userDao: UserDao): BookImpl {
+        return BookImpl(bookService, userDao)
     }
 }

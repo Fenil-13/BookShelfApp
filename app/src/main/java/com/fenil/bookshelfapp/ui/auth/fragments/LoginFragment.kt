@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -42,7 +43,9 @@ class LoginFragment : Fragment() {
             if (it == null){
                 context?.showToast("email and password does not match. Login Failed")
             }else{
-
+                context?.showToast("Login Successfully")
+                activity?.setResult(AppCompatActivity.RESULT_OK)
+                activity?.finish()
             }
         }
     }

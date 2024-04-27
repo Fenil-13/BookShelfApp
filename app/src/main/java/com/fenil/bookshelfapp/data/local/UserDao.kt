@@ -1,10 +1,9 @@
 package com.fenil.bookshelfapp.data.local
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
+import com.fenil.bookshelfapp.data.local.model.AnnotationEntity
 import com.fenil.bookshelfapp.data.local.model.UserEntity
 
 @Dao
@@ -20,4 +19,13 @@ interface UserDao {
 
     @Query("UPDATE userentity SET isLoggedIn = false WHERE email = :email")
     suspend fun logoutUser(email: String)
+
+    @Query("UPDATE userentity SET isLoggedIn = true WHERE email = :email")
+    suspend fun loginUser(email: String)
+
+    @Insert
+    suspend fun insertAnnotation(annotationEntity: AnnotationEntity)
+
+    @Query("SELECT * FROM AnnotationEntity WHERE userId = :userEmail AND bookId = :bookId")
+    suspend fun getAnnotationsForUserAndBook(userEmail: String, bookId: String): List<AnnotationEntity>
 }

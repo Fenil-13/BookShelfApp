@@ -1,4 +1,4 @@
-package com.fenil.bookshelfapp.data.remote
+package com.fenil.bookshelfapp.data.remote.interfaces
 
 import com.fenil.bookshelfapp.data.remote.data.CountryResponse
 import com.fenil.bookshelfapp.data.remote.data.LocationResponse
