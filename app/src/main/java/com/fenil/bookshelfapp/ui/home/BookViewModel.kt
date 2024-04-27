@@ -40,7 +40,7 @@ class BookViewModel @Inject constructor(
                     valueTransform = { it }
                 )?.filter { map ->
                     map.value.isNotEmpty()
-                }?.toSortedMap()
+                }?.toSortedMap(compareByDescending { it })
             }
         }
     }
