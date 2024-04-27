@@ -1,17 +1,23 @@
 package com.fenil.bookshelfapp.ui.home
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.fenil.bookshelfapp.DelayAwareClickListener.DelayAwareClickListener
 import com.fenil.bookshelfapp.DelayAwareClickListener.Status
 import com.fenil.bookshelfapp.R
 import com.fenil.bookshelfapp.data.remote.data.Book
 import com.fenil.bookshelfapp.databinding.ActivityMainBinding
 import com.fenil.bookshelfapp.ui.auth.AuthActivity
 import com.fenil.bookshelfapp.ui.auth.AuthViewModel
+import com.fenil.bookshelfapp.ui.detail.BookDetailsActivity
+import com.fenil.bookshelfapp.ui.detail.BookDetailsActivity.Companion.BOOK
+import com.fenil.bookshelfapp.ui.detail.BookDetailsActivity.Companion.USER
+import com.fenil.bookshelfapp.ui.detail.adapter.BookAnnotationAdapter
 import com.fenil.bookshelfapp.ui.home.adapter.BookAdapter
 import com.fenil.bookshelfapp.ui.utils.VerticalHorizontalItemDecorator
 import com.google.android.material.tabs.TabLayout
@@ -27,7 +33,14 @@ class MainActivity : AppCompatActivity() {
     private val authViewModel: AuthViewModel by viewModels<AuthViewModel>()
     private val bookViewModel: BookViewModel by viewModels<BookViewModel>()
 
-    private val bookAdapter = BookAdapter()
+    private val REQUEST_FOR_AUTH = 1001
+
+    private val bookAnnotationAdapter = BookAdapter{
+        val bookIntent = Intent(this, BookDetailsActivity::class.java)
+        bookIntent.putExtra(BOOK, it)
+        bookIntent.putExtra(USER, authViewModel.loggedInUserResponse.value)
+        startActivity(bookIntent)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +51,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUi() {
-//        binding.btnLogOut.setOnClickListener(DelayAwareClickListener{
-//            authViewModel.loggedInUserResponse.observe(this@MainActivity){
-//                authViewModel.logout(it?.email.orEmpty())
-//            }
-//            startActivity(Intent(this, AuthActivity::class.java))
-//        })
+        binding.btnLogOut.setOnClickListener(DelayAwareClickListener{
+            authViewModel.loggedInUserResponse.observe(this@MainActivity){
+                authViewModel.logout(it?.email.orEmpty())
+            }
+            startActivity(Intent(this, AuthActivity::class.java))
+        })
 
         binding.rvBooks.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -51,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                 removeItemDecorationAt(0)
             }
             addItemDecoration(VerticalHorizontalItemDecorator(this@MainActivity, R.dimen.dp_10,R.dimen.dp_0))
-            adapter = bookAdapter
+            adapter = bookAnnotationAdapter
         }
 
         binding.bookYearsTab.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
@@ -78,13 +91,13 @@ class MainActivity : AppCompatActivity() {
     private fun updateDataBasedOnPosition(position: Int) {
         val year = binding.bookYearsTab.getTabAt(position)?.text
         val bookListAtYear = bookViewModel.getBookListByYear(year.toString().toInt())
-        bookAdapter.submitList(bookListAtYear)
+        bookAnnotationAdapter.submitList(bookListAtYear)
     }
 
     private fun observeViewModels() {
         authViewModel.loggedInUserResponse.observe(this) {
             if (it == null) {
-                startActivity(Intent(this, AuthActivity::class.java))
+                startActivityForResult(Intent(this, AuthActivity::class.java), REQUEST_FOR_AUTH)
             }else{
                 bookViewModel.getBookList()
             }
@@ -121,7 +134,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun populateDataOnList(books: List<Book>?) {
         books?.let {
-            bookAdapter.submitList(books)
+            bookAnnotationAdapter.submitList(books)
         }
     }
 
@@ -136,10 +149,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            RESULT_OK -> {
-                bookViewModel.getBookList()
-            }
+        if (requestCode == REQUEST_FOR_AUTH && resultCode == Activity.RESULT_OK){
+            bookViewModel.getBookList()
         }
     }
 }

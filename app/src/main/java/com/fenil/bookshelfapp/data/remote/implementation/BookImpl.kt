@@ -18,10 +18,10 @@ class BookImpl(
     }
 
     override suspend fun getAnnotationByBookId(
-        bookId: String,
-        userId: String
+        userEmail: String,
+        bookId: String
     ): List<AnnotationEntity> {
-        return userDao.getAnnotationsForUserAndBook(userId, bookId)
+        return userDao.getAnnotationsForUserAndBook(userEmail, bookId)
     }
 
     override suspend fun insertAnnotation(annotationEntity: AnnotationEntity) {

@@ -2,6 +2,7 @@ package com.fenil.bookshelfapp.ui.auth.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,6 +60,9 @@ class SignUpFragment : Fragment() {
             }else if (binding.etEmail.isEmpty()){
                 context?.showToast("Email cannot be empty")
                 return@DelayAwareClickListener
+            }else if (!Patterns.EMAIL_ADDRESS.matcher(binding.etEmail.text.toString()).matches()){
+                context?.showToast("Enter valid email address")
+                return@DelayAwareClickListener
             }else if (binding.etPassword.isEmpty()){
                 context?.showToast("Password cannot be empty")
                 return@DelayAwareClickListener
@@ -114,16 +118,6 @@ class SignUpFragment : Fragment() {
                         context?.showToast("Not able to fetch country data")
                     }
                 }
-            }
-        }
-
-        authViewModel.signUpResponse.observe(viewLifecycleOwner) {
-            if (it == true){
-                context?.showToast("Sign up successfully. Please login now")
-                activity?.setResult(AppCompatActivity.RESULT_OK)
-                activity?.finish()
-            }else{
-                context?.showToast("Sign up failed. Please try again")
             }
         }
     }

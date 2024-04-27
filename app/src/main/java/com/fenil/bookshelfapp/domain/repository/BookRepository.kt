@@ -6,6 +6,6 @@ import com.fenil.bookshelfapp.data.remote.data.Book
 
 interface BookRepository {
     suspend fun getBooks(): Resource<List<Book>?>
-    suspend fun getAnnotationByBookId(bookId: String, userId: String): List<AnnotationEntity>
+    suspend fun getAnnotationByBookId(userEmail: String, bookId: String): List<AnnotationEntity>
     suspend fun insertAnnotation(annotationEntity: AnnotationEntity)
 }

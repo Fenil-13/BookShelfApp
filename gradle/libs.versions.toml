@@ -48,3 +48,4 @@ jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "k
 kotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 navigationSafeArgs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationFragment" }
+kotlinParcelize = { id = "org.jetbrains.kotlin.plugin.parcelize",  version.ref = "kotlin"  }

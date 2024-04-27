@@ -22,6 +22,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginStart="10dp"
+        android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@+id/ivBook"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -45,6 +46,7 @@
         android:textSize="16sp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@+id/ivBook"
         app:layout_constraintTop_toBottomOf="@+id/tvBookScore"
         app:layout_constraintEnd_toEndOf="parent" />

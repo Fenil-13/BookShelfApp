@@ -35,19 +35,6 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUi()
-        observeViewModels()
-    }
-
-    private fun observeViewModels() {
-        authViewModel.loginResponse.observe(viewLifecycleOwner) {
-            if (it == null){
-                context?.showToast("email and password does not match. Login Failed")
-            }else{
-                context?.showToast("Login Successfully")
-                activity?.setResult(AppCompatActivity.RESULT_OK)
-                activity?.finish()
-            }
-        }
     }
 
     private fun setupUi() {

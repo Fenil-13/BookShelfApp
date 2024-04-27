@@ -1,10 +1,13 @@
 package com.fenil.bookshelfapp.data.remote.data
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 @Entity
+@Parcelize
 data class Book(
     @PrimaryKey
     @SerializedName("id")
@@ -19,4 +22,4 @@ data class Book(
     val title: String?,
     @SerializedName("publishedChapterDate")
     val publishedChapterDate: Long?
-)
+): Parcelable

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="Book Title"
+        android:paddingEnd="50dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:background="#03A9F4"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/tvBookTitle"/>
+
+    <ImageView
+        android:id="@+id/btnAddAnnotation"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_add"
+        android:layout_margin="@dimen/dp_10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivBook"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBookTitle" />
+
+    <TextView
+        android:id="@+id/tvBookTitleSmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toEndOf="@+id/ivBook"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBookTitle"/>
+
+    <TextView
+        android:id="@+id/tvBookScore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:textColor="#FF5722"
+        app:layout_constraintStart_toEndOf="@+id/ivBook"
+        app:layout_constraintTop_toBottomOf="@+id/tvBookTitleSmall"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvBookPublishDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/ivBook"
+        app:layout_constraintTop_toBottomOf="@+id/tvBookScore"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvBookSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:text="@string/book_summary"
+        android:layout_margin="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@+id/ivBook" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvAnnotation"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/dp_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBookSummary"
+        tools:layout_editor_absoluteX="10dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

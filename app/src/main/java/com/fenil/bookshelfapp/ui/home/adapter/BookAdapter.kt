@@ -6,13 +6,16 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.fenil.bookshelfapp.DelayAwareClickListener.DelayAwareClickListener
 import com.fenil.bookshelfapp.R
 import com.fenil.bookshelfapp.data.remote.data.Book
 import com.fenil.bookshelfapp.databinding.ItemBookBinding
+import com.fenil.bookshelfapp.ui.detail.adapter.BookAnnotationAdapter
+import com.fenil.bookshelfapp.ui.utils.getDateString
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class BookAdapter() : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
+class BookAdapter(private val onBookClick: (book: Book) -> Unit) : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
 
     private val differ = AsyncListDiffer(this, BookDiffCallback())
 
@@ -20,7 +23,7 @@ class BookAdapter() : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
         val binding = ItemBookBinding.inflate(
            LayoutInflater.from(parent.context), parent, false
         )
-        return BookViewHolder(binding)
+        return BookViewHolder(onBookClick, binding)
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
@@ -34,8 +37,7 @@ class BookAdapter() : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
         differ.submitList(list)
     }
 
-    class BookViewHolder(private val binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.ENGLISH)
+    class BookViewHolder(val onBookClick: (book: Book) -> Unit, private val binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(book: Book?) {
             book?.let {
                 binding.apply {
@@ -51,9 +53,11 @@ class BookAdapter() : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
                     }
                 }
             }
-        }
-        private fun getDateString(time: Long) : String = simpleDateFormat.format(time * 1000L)
 
+            binding.root.setOnClickListener(DelayAwareClickListener{
+                book?.let(onBookClick)
+            })
+        }
     }
     class BookDiffCallback : DiffUtil.ItemCallback<Book>() {
         override fun areItemsTheSame(oldItem: Book, newItem: Book): Boolean {
