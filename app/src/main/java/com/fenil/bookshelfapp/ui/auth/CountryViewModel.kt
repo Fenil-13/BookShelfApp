@@ -30,7 +30,10 @@ class CountryViewModel @Inject constructor(
     private fun getCountryList() {
         viewModelScope.launch {
             val response = countryRepository.getCountryList()
-            _countryData.value = response
+            _countryData.value = response.map {
+                it?.data = it?.data?.entries?.sortedBy { it.value.country }?.associate{ it.toPair() }
+                it
+            }
         }
     }
 

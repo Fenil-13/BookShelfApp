@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fenil.bookshelfapp.DelayAwareClickListener.DelayAwareClickListener
 import com.fenil.bookshelfapp.DelayAwareClickListener.Status
+import com.fenil.bookshelfapp.DelayAwareClickListener.showToast
 import com.fenil.bookshelfapp.R
 import com.fenil.bookshelfapp.data.remote.data.Book
 import com.fenil.bookshelfapp.databinding.ActivityMainBinding
@@ -19,6 +20,7 @@ import com.fenil.bookshelfapp.ui.detail.BookDetailsActivity.Companion.BOOK
 import com.fenil.bookshelfapp.ui.detail.BookDetailsActivity.Companion.USER
 import com.fenil.bookshelfapp.ui.detail.adapter.BookAnnotationAdapter
 import com.fenil.bookshelfapp.ui.home.adapter.BookAdapter
+import com.fenil.bookshelfapp.ui.utils.PaginationListScrollListener
 import com.fenil.bookshelfapp.ui.utils.VerticalHorizontalItemDecorator
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,6 +58,7 @@ class MainActivity : AppCompatActivity() {
             authViewModel.loggedInUserResponse.value.let{
                 authViewModel.logout(it?.email.orEmpty())
             }
+            showToast("Logged out successfully")
             finish()
             val authIntent = Intent(this, AuthActivity::class.java)
             authIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -69,6 +72,14 @@ class MainActivity : AppCompatActivity() {
             }
             addItemDecoration(VerticalHorizontalItemDecorator(this@MainActivity, R.dimen.dp_10,R.dimen.dp_0))
             adapter = bookAnnotationAdapter
+//            addOnScrollListener(PaginationListScrollListener(
+//                mayBeFetchNextData = {
+//                    redirectToTab(binding.bookYearsTab.selectedTabPosition+1)
+//                },
+//                mayBeFetchPreviousData = {
+//                    redirectToTab(binding.bookYearsTab.selectedTabPosition-1)
+//                }
+//            ))
         }
 
         binding.bookYearsTab.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
@@ -92,10 +103,17 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun redirectToTab(position: Int) {
+        if(position < 0 || position >= binding.bookYearsTab.tabCount) return
+        binding.bookYearsTab.setScrollPosition(position, 0f, true)
+        updateDataBasedOnPosition(position)
+    }
+
     private fun updateDataBasedOnPosition(position: Int) {
         val year = binding.bookYearsTab.getTabAt(position)?.text
         val bookListAtYear = bookViewModel.getBookListByYear(year.toString().toInt())
         bookAnnotationAdapter.submitList(bookListAtYear)
+        binding.rvBooks.scrollToPosition(0)
     }
 
     private fun observeViewModels() {
@@ -159,8 +177,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_FOR_AUTH && resultCode == Activity.RESULT_OK){
-            authViewModel.getLoggedInUser()
+        if (requestCode == REQUEST_FOR_AUTH && resultCode == RESULT_CANCELED){
+            onBackPressed()
         }
     }
 }

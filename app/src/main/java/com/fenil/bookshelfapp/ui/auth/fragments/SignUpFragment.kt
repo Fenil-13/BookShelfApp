@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -93,12 +94,18 @@ class SignUpFragment : Fragment() {
             } ?: kotlin.run {
                 when(it.status){
                     Status.LOADING -> {
-                        binding.progressBar.visibility = View.VISIBLE
+                        binding.progressBar.isVisible = true
+                        binding.signupForm.isVisible = false
+                        binding.tvError.isVisible = false
                     }
                     Status.SUCCESS -> {}
                     Status.ERROR,
                     Status.FAILURE,
                     Status.NO_INTERNET ->{
+                        binding.progressBar.isVisible = false
+                        binding.tvError.isVisible = true
+                        binding.signupForm.isVisible = false
+                        binding.tvError.text = it.message
                         context?.showToast("Not able to fetch country data")
                     }
                 }
@@ -133,7 +140,6 @@ class SignUpFragment : Fragment() {
             val adapter = ArrayAdapter(context ?: requireContext(), android.R.layout.simple_spinner_item, countryNameList)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.countrySpinner.setAdapter(adapter)
-
         }
     }
 

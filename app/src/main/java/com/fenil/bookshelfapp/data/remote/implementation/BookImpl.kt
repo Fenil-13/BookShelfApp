@@ -7,14 +7,20 @@ import com.fenil.bookshelfapp.data.local.model.AnnotationEntity
 import com.fenil.bookshelfapp.data.local.model.BookmarkEntity
 import com.fenil.bookshelfapp.data.remote.interfaces.BookService
 import com.fenil.bookshelfapp.data.remote.data.Book
+import com.fenil.bookshelfapp.di.NetworkHelper
 import com.fenil.bookshelfapp.domain.repository.BookRepository
+import javax.inject.Inject
 
-class BookImpl(
+class BookImpl @Inject constructor(
     private val bookService: BookService,
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val networkHelper: NetworkHelper,
 ) : BookRepository {
 
     override suspend fun getBooks(): Resource<List<Book>?> {
+        if (!networkHelper.isNetworkConnected()){
+            return Resource.noInternet()
+        }
         return bookService.getBooks().asResource()
     }
 

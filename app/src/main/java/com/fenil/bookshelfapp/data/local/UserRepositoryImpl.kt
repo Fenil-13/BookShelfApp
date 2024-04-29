@@ -4,8 +4,9 @@ import com.fenil.bookshelfapp.data.local.model.toUser
 import com.fenil.bookshelfapp.domain.model.User
 import com.fenil.bookshelfapp.domain.model.toUserEntity
 import com.fenil.bookshelfapp.domain.repository.UserRepository
+import javax.inject.Inject
 
-class UserRepositoryImpl(private val userDao: UserDao) : UserRepository {
+class UserRepositoryImpl @Inject constructor (private val userDao: UserDao) : UserRepository {
 
     override suspend fun signUp(user: User): Boolean {
         return try {

@@ -12,7 +12,7 @@ data class CountryResponse(
     @SerializedName("access")
     val access: String?,
     @SerializedName("data")
-    val data: Map<String, CountryInfo>?
+    var data: Map<String, CountryInfo>?
 )
 
 data class CountryInfo(

@@ -1,11 +1,12 @@
 package com.fenil.bookshelfapp.ui.auth
 
-import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.fenil.bookshelfapp.DelayAwareClickListener.showToast
 import com.fenil.bookshelfapp.databinding.ActivityAuthBinding
+import com.fenil.bookshelfapp.ui.home.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -28,8 +29,8 @@ class AuthActivity : AppCompatActivity() {
         authViewModel.signUpResponse.observe(this) {
             if (it == true){
                 showToast("Sign up successfully")
-                setResult(Activity.RESULT_OK)
                 finish()
+                redirectToHomeScreen()
             }else{
                 showToast("Sign up failed. Please try again")
             }
@@ -40,9 +41,20 @@ class AuthActivity : AppCompatActivity() {
                 showToast("email and password does not match. Login Failed")
             }else{
                 showToast("Login Successfully")
-                setResult(Activity.RESULT_OK)
                 finish()
+                redirectToHomeScreen()
             }
         }
+    }
+
+    private fun redirectToHomeScreen() {
+        val homeIntent = Intent(this, MainActivity::class.java)
+        homeIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(homeIntent)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        setResult(RESULT_CANCELED)
     }
 }

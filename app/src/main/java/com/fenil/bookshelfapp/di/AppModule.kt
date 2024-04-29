@@ -89,19 +89,4 @@ class AppModule {
     fun provideUserDao(userDatabase: UserDatabase): UserDao {
         return userDatabase.userDao()
     }
-
-    @Provides
-    fun provideUserImplementation(userDao: UserDao): UserRepositoryImpl {
-        return UserRepositoryImpl(userDao)
-    }
-
-    @Provides
-    fun provideCountryImplementation(@CountryServiceApi countryService: CountryService, @LocationServiceApi locationServiceApi: CountryService): CountryImpl {
-        return CountryImpl(countryService, locationServiceApi)
-    }
-
-    @Provides
-    fun provideBookImplementation(bookService: BookService, userDao: UserDao): BookImpl {
-        return BookImpl(bookService, userDao)
-    }
 }

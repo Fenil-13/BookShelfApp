@@ -51,6 +51,7 @@ class BookAdapter(private val onBookClick: (book: Book) -> Unit) : RecyclerView.
                     tvBookPublishDate.text = book.publishedChapterDate?.let { timeStamp ->
                         getDateString(timeStamp)
                     }
+
                 }
             }
 
